@@ -26,6 +26,7 @@ object HandshakeV10Decoder {
   final val SeedSize = 8
   final val SeedComplementSize = 12
   final val Padding = 10
+  final val PluginMethod = "mysql_native_password"
 }
 
 class HandshakeV10Decoder(charset: Charset) extends MessageDecoder {
@@ -52,12 +53,13 @@ class HandshakeV10Decoder(charset: Charset) extends MessageDecoder {
     val authPluginDataLength = buffer.readUnsignedByte()
     var authenticationMethod: Option[String] = None
 
-    if (authPluginDataLength > 0) {
-      buffer.readerIndex(buffer.readerIndex() + Padding)
-      buffer.readBytes(seed, SeedSize, SeedComplementSize)
-      buffer.readByte()
-      authenticationMethod = Some(ByteBufferUtils.readUntilEOF(buffer, charset))
-    }
+	buffer.readerIndex(buffer.readerIndex() + Padding)
+	buffer.readBytes(seed, SeedSize, SeedComplementSize)
+	buffer.readByte()
+    authenticationMethod = if (authPluginDataLength > 0)
+	  Some(ByteBufferUtils.readUntilEOF(buffer, charset))
+	else
+	  Some(PluginMethod)
 
     new HandshakeMessage(
       serverVersion,
