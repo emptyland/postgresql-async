@@ -53,9 +53,9 @@ class HandshakeV10Decoder(charset: Charset) extends MessageDecoder {
     val authPluginDataLength = buffer.readUnsignedByte()
     var authenticationMethod: Option[String] = None
 
-	buffer.readerIndex(buffer.readerIndex() + Padding)
-	buffer.readBytes(seed, SeedSize, SeedComplementSize)
-	buffer.readByte()
+    buffer.readerIndex(buffer.readerIndex() + Padding)
+    buffer.readBytes(seed, SeedSize, SeedComplementSize)
+    buffer.readByte()
     authenticationMethod = if (authPluginDataLength > 0)
 	  Some(ByteBufferUtils.readUntilEOF(buffer, charset))
 	else
