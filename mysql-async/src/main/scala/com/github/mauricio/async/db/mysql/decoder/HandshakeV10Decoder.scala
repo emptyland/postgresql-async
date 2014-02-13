@@ -40,7 +40,6 @@ class HandshakeV10Decoder(charset: Charset) extends MessageDecoder {
 
     var seed = new Array[Byte]( SeedSize + SeedComplementSize )
     buffer.readBytes(seed, 0, SeedSize)
-
     buffer.readByte()
 
     var serverCapabilityFlags: Int = buffer.readShort()
@@ -57,9 +56,9 @@ class HandshakeV10Decoder(charset: Charset) extends MessageDecoder {
     buffer.readBytes(seed, SeedSize, SeedComplementSize)
     buffer.readByte()
     authenticationMethod = if (authPluginDataLength > 0)
-	  Some(ByteBufferUtils.readUntilEOF(buffer, charset))
-	else
-	  Some(PluginMethod)
+      Some(ByteBufferUtils.readUntilEOF(buffer, charset))
+    else
+      Some(PluginMethod)
 
     new HandshakeMessage(
       serverVersion,
